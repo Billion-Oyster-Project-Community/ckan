@@ -5,8 +5,9 @@
   roles:
     - os
     - firewall
+    - java
     - python
     - postgres
     - redis
-    - java
+    - solr
     - ckan

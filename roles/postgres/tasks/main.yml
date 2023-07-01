@@ -8,6 +8,11 @@
     name: libpq5
     state: present
 
+- name: Install libpq-dev
+  ansible.builtin.package:
+    name: libpq-dev
+    state: present
+
 - name: Start service postgresql, if not started
   ansible.builtin.systemd:
     name: postgresql
@@ -29,7 +34,7 @@
   community.postgresql.postgresql_user:
     db: ckan_default
     name: ckan_default
-    password: password
+    password: "{{ postgres_password }}"
 
 - name: Set ckan_default owner to ckan_default
   become_user: postgres

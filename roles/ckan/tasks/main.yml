@@ -1,8 +1,13 @@
 - name: Create ckan app directory
   ansible.builtin.file:
-    path: /srv/app/src
+    path: /etc/ckan/default
     state: directory
     mode: '0755'
+
+- name: Create ckan config
+  ansible.builtin.template:
+    src: roles/ckan/templates/ckan.ini.j2
+    dest: /etc/ckan/default/ckan.ini
 
 - name: Create ckan venv directory
   ansible.builtin.file:
@@ -14,6 +19,11 @@
   ansible.builtin.command:
     cmd: /usr/bin/python3 -m venv /usr/lib/ckan/default
     creates: /usr/lib/ckan/default/bin/activate
+
+- name: Install psycopg2 into ckan venv
+  ansible.builtin.pip:
+    name: psycopg2-binary
+    virtualenv: /usr/lib/ckan/default
 
 - name: Install ckan python dependencies
   ansible.builtin.pip:

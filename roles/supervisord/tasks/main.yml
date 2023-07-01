@@ -1,0 +1,4 @@
+- name: Install supervisord
+  ansible.builtin.package:
+    name: supervisord
+    state: present
