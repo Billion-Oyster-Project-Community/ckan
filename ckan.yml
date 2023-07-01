@@ -1,0 +1,12 @@
+- name: 'install ckan'
+  hosts: ckan
+  become: true
+
+  roles:
+    #- os
+    #- firewall
+    #- python
+    - postgres
+    #- redis
+    #- java
+    #- ckan

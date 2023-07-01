@@ -1,0 +1,42 @@
+- name: Install postgresql
+  ansible.builtin.package:
+    name: postgresql
+    state: present
+
+- name: Install libpq
+  ansible.builtin.package:
+    name: libpq5
+    state: present
+
+- name: Start service postgresql, if not started
+  ansible.builtin.systemd:
+    name: postgresql
+    state: started
+
+- name: Create ckan_default db
+  become_user: postgres
+  vars:
+  # See: https://github.com/ansible/ansible/issues/16048
+    ansible_ssh_pipelining: true
+  community.postgresql.postgresql_db:
+    name: ckan_default
+    encoding: UTF-8
+
+- name: Create ckan_default user
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  community.postgresql.postgresql_user:
+    db: ckan_default
+    name: ckan_default
+    password: password
+
+- name: Set ckan_default owner to ckan_default
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  community.postgresql.postgresql_owner:
+    db: ckan_default
+    new_owner: ckan_default
+    obj_name: ckan_default
+    obj_type: database

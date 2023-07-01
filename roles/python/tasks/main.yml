@@ -1,0 +1,18 @@
+- name: Install python3
+  ansible.builtin.package:
+    name: python3>=3.7
+    state: present
+
+- name: Install python3-venv
+  ansible.builtin.package:
+    name: python3.8-venv
+    state: present
+
+- name: Install python3-pip
+  ansible.builtin.package:
+    name: python3-pip
+    state: present
+
+- name: Install psycopg2
+  ansible.builtin.pip:
+    name: psycopg2-binary

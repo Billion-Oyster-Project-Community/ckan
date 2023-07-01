@@ -1,0 +1,21 @@
+- name: Create ckan app directory
+  ansible.builtin.file:
+    path: /srv/app/src
+    state: directory
+    mode: '0755'
+
+- name: Create ckan venv directory
+  ansible.builtin.file:
+    path: /usr/lib/ckan/default
+    state: directory
+    mode: '0755'
+
+- name: Create ckan python venv
+  ansible.builtin.command:
+    cmd: /usr/bin/python3 -m venv /usr/lib/ckan/default
+    creates: /usr/lib/ckan/default/bin/activate
+
+- name: Install ckan python dependencies
+  ansible.builtin.pip:
+    name: git+https://github.com/ckan/ckan.git@ckan-2.10.1#egg=ckan[requirements]
+    virtualenv: /usr/lib/ckan/default

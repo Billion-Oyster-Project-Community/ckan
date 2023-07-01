@@ -1,4 +1,4 @@
-- name: Install java
+- name: Install git
   ansible.builtin.package:
-    name: openjdk-8-jdk
+    name: git
     state: present
