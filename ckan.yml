@@ -3,10 +3,10 @@
   become: true
 
   roles:
-    #- os
-    #- firewall
-    #- python
+    - os
+    - firewall
+    - python
     - postgres
-    #- redis
-    #- java
-    #- ckan
+    - redis
+    - java
+    - ckan
