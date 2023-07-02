@@ -1,0 +1,4 @@
+- name: Restart supervisorctl
+  community.general.supervisorctl:
+    name: all
+    state: restarted

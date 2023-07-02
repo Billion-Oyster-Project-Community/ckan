@@ -17,12 +17,15 @@
   ansible.builtin.template:
     src: roles/nginx/templates/ckan.j2
     dest: /etc/nginx/sites-available/ckan
+    mode: '0755'
 
 - name: Enable ckan site
   ansible.builtin.file:
     src: /etc/nginx/sites-available/ckan
     dest: /etc/nginx/sites-enabled/ckan
     state: link
+  notify:
+    - "Restart nginx"
 
 - name: Start nginx
   ansible.builtin.service:

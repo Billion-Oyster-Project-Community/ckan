@@ -13,6 +13,18 @@
   ansible.builtin.template:
     src: roles/supervisord/templates/ckan-uwsgi.conf.j2
     dest: /etc/supervisor/conf.d/ckan-uwsgi.conf
+    mode: '0755'
+  notify:
+    - "Restart supervisorctl"
+
+- name: Reload supervisorctl"
+  ansible.builtin.command:
+    cmd: supervisorctl reload
+
+- name: Restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
 
 - name: Start supervisord
   ansible.builtin.service:

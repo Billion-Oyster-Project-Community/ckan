@@ -2,27 +2,29 @@
   ansible.builtin.file:
     path: /tmp/solr
     state: directory
+    mode: '0755'
 
 - name: Download Solr Archive
   ansible.builtin.get_url:
     url: https://dlcdn.apache.org/lucene/solr/8.11.2/solr-8.11.2.tgz
     dest: /tmp/solr/solr-8.11.2.tgz
+    mode: '0755'
 
 - name: Extract Apache Solr Archive
   ansible.builtin.unarchive:
     src: /tmp/solr/solr-8.11.2.tgz
     dest: /tmp/solr
-    remote_src: yes
+    remote_src: true
 
 - name: Apache Solr installation check
-  stat:
+  ansible.builtin.stat:
     path: /opt/solr
   register: solr
 
 - name: Install Apache Solr
-  when: "not solr.stat.exists"
   ansible.builtin.command:
     cmd: /tmp/solr/solr-8.11.2/bin/install_solr_service.sh /tmp/solr/solr-8.11.2.tgz
+  when: "not solr.stat.exists"
 
 - name: Start Apache Solr
   ansible.builtin.service:
@@ -30,30 +32,23 @@
     state: started
 
 - name: Apache Solr core installation check
-  stat:
+  ansible.builtin.stat:
     path: /var/solr/data/ckan
   register: ckan_core
 
 - name: Install ckan solr core
-  when: "not ckan_core.stat.exists"
   become_user: solr
   vars:
     ansible_ssh_pipelining: true
   ansible.builtin.command:
     cmd: /opt/solr/bin/solr create -c ckan
+  when: "not ckan_core.stat.exists"
 
 - name: Install ckan solr schema
   ansible.builtin.template:
     src: roles/solr/templates/schema.xml.j2
     dest: /var/solr/data/ckan/conf/managed-schema
+    mode: '0755'
     # dest: /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
-
-- name: Restart solr
-  ansible.builtin.service:
-    name: solr
-    state: restarted
-
-- name: Start solr
-  ansible.builtin.service:
-    name: solr
-    state: started
+  notify:
+    - "Restart solr"

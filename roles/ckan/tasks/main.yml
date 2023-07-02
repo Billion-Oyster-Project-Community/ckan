@@ -9,22 +9,25 @@
     path: /var/lib/ckan/default
     owner: www-data
     state: directory
-    mode: '777' # FIXME Switch ownership and access to ckan https://github.com/ckan/ckan/issues/3676
+    mode: '0755' # FIXME Switch ownership and access to ckan https://github.com/ckan/ckan/issues/3676
 
 - name: Create ckan config
   ansible.builtin.template:
     src: roles/ckan/templates/ckan.ini.j2
     dest: /etc/ckan/default/ckan.ini
+    mode: '0755'
 
 - name: Create ckan uwsgi script
   ansible.builtin.template:
     src: roles/ckan/templates/wsgi.py.j2
     dest: /etc/ckan/default/wsgi.py
+    mode: '0755'
 
 - name: Create ckan uwsgi config
   ansible.builtin.template:
     src: roles/ckan/templates/ckan-uwsgi.ini.j2
     dest: /etc/ckan/default/ckan-uwsgi.ini
+    mode: '0755'
 
 - name: Create ckan venv directory
   ansible.builtin.file:
@@ -48,12 +51,22 @@
     name: uwsgi
     virtualenv: /usr/lib/ckan/default
 
+- name: Check ckan installation
+  ansible.builtin.stat:
+    path: /usr/lib/ckan/default/src/
+  register: ckan_installed
+
 - name: Install ckan
   ansible.builtin.shell: |
     source "/usr/lib/ckan/default/bin/activate"
     pip install -e 'git+https://github.com/ckan/ckan.git@ckan-2.10.1#egg=ckan[requirements]'
   args:
     executable: /bin/bash
+
+- name: Restart solr
+  ansible.builtin.service:
+    name: solr
+    state: restarted
 
 - name: Initialize ckan database
   ansible.builtin.shell:

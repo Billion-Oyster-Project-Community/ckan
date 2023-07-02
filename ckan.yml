@@ -11,6 +11,6 @@
     - redis
     - solr
     - ckan
-    - supervisord
-    # TODO Configure handlers for solr, nginx, and supervisord
     - nginx
+    - supervisord
+
