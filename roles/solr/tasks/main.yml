@@ -8,8 +8,6 @@
     url: https://dlcdn.apache.org/lucene/solr/8.11.2/solr-8.11.2.tgz
     dest: /tmp/solr/solr-8.11.2.tgz
 
-# FIXME Fix failure to unarchive at this task
-# https://github.com/ansible/ansible/issues/35645
 - name: Extract Apache Solr Archive
   ansible.builtin.unarchive:
     src: /tmp/solr/solr-8.11.2.tgz
@@ -44,13 +42,16 @@
   ansible.builtin.command:
     cmd: /opt/solr/bin/solr create -c ckan
 
-
-# FIXME Change Solr schema.xml version to 2.8 with ansible template
 - name: Install ckan solr schema
   ansible.builtin.template:
     src: roles/solr/templates/schema.xml.j2
     dest: /var/solr/data/ckan/conf/managed-schema
-    # FIXME /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
+    # dest: /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
+
+- name: Restart solr
+  ansible.builtin.service:
+    name: solr
+    state: restarted
 
 - name: Start solr
   ansible.builtin.service:

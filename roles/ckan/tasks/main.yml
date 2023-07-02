@@ -55,8 +55,6 @@
   args:
     executable: /bin/bash
 
-# FIXME Solr should be restarted with handler
-
 - name: Initialize ckan database
   ansible.builtin.shell:
     cmd: /usr/lib/ckan/default/bin/ckan -c /etc/ckan/default/ckan.ini db init
