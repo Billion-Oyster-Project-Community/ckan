@@ -1,0 +1,30 @@
+- name: Install nginx
+  ansible.builtin.package:
+    name: nginx
+    state: present
+
+- name: Remove default nginx site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Remove default nginx site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-available/default
+    state: absent
+
+- name: Create ckan nginx site
+  ansible.builtin.template:
+    src: roles/nginx/templates/ckan.j2
+    dest: /etc/nginx/sites-available/ckan
+
+- name: Enable ckan site
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/ckan
+    dest: /etc/nginx/sites-enabled/ckan
+    state: link
+
+- name: Start nginx
+  ansible.builtin.service:
+    name: nginx
+    state: started

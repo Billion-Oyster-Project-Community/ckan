@@ -4,10 +4,27 @@
     state: directory
     mode: '0755'
 
+- name: Create ckan uploads directory
+  ansible.builtin.file:
+    path: /var/lib/ckan/default
+    owner: www-data
+    state: directory
+    mode: '777' # FIXME Switch ownership and access to ckan https://github.com/ckan/ckan/issues/3676
+
 - name: Create ckan config
   ansible.builtin.template:
     src: roles/ckan/templates/ckan.ini.j2
     dest: /etc/ckan/default/ckan.ini
+
+- name: Create ckan uwsgi script
+  ansible.builtin.template:
+    src: roles/ckan/templates/wsgi.py.j2
+    dest: /etc/ckan/default/wsgi.py
+
+- name: Create ckan uwsgi config
+  ansible.builtin.template:
+    src: roles/ckan/templates/ckan-uwsgi.ini.j2
+    dest: /etc/ckan/default/ckan-uwsgi.ini
 
 - name: Create ckan venv directory
   ansible.builtin.file:
@@ -20,12 +37,47 @@
     cmd: /usr/bin/python3 -m venv /usr/lib/ckan/default
     creates: /usr/lib/ckan/default/bin/activate
 
+# TODO The psycopg2 installation in other locations other than the venv may be redundant.
 - name: Install psycopg2 into ckan venv
   ansible.builtin.pip:
     name: psycopg2-binary
     virtualenv: /usr/lib/ckan/default
 
-- name: Install ckan python dependencies
+- name: Install uwsgi into ckan venv
   ansible.builtin.pip:
-    name: git+https://github.com/ckan/ckan.git@ckan-2.10.1#egg=ckan[requirements]
+    name: uwsgi
     virtualenv: /usr/lib/ckan/default
+
+- name: Install ckan
+  ansible.builtin.shell: |
+    source "/usr/lib/ckan/default/bin/activate"
+    pip install -e 'git+https://github.com/ckan/ckan.git@ckan-2.10.1#egg=ckan[requirements]'
+  args:
+    executable: /bin/bash
+
+# FIXME Solr should be restarted with handler
+
+- name: Initialize ckan database
+  ansible.builtin.shell:
+    cmd: /usr/lib/ckan/default/bin/ckan -c /etc/ckan/default/ckan.ini db init
+
+- name: Set correct privileges to internalization
+  ansible.builtin.file:
+    path: /usr/lib/ckan/default/src/ckan/ckan/public/base/i18n/
+    owner: www-data
+    mode: u+rwx
+
+# explicitly reload supervisorctl to load process scripts. Create a handler
+# TODO Install CKAN extensions
+
+# NOTES
+# The pip ansible module does not correctly install into /usr/lib/ckan/default/src/
+#
+# On the server you must run sudo supervisorctl reload start the web service
+#
+# CKAN may not be looking at /var/solr/data/ckan/conf/managed-schema
+# but may be looking at /usr/lib/ckan/default/lib/python3.8/site-packages/ckan/config/solr/schema.xml 
+# Make sure to change the schema version to 2.8, 2.9, or 2.10 (use ansible template)
+# RESTART solr afterwards sudo solr service restart
+#
+#

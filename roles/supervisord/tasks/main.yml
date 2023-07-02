@@ -1,4 +1,20 @@
 - name: Install supervisord
   ansible.builtin.package:
-    name: supervisord
+    name: supervisor
     state: present
+
+- name: Create supervisord config directory
+  ansible.builtin.file:
+    path: /etc/supervisor/conf.d
+    state: directory
+    mode: '0755'
+
+- name: Create ckan uwsgi supervisord script
+  ansible.builtin.template:
+    src: roles/supervisord/templates/ckan-uwsgi.conf.j2
+    dest: /etc/supervisor/conf.d/ckan-uwsgi.conf
+
+- name: Start supervisord
+  ansible.builtin.service:
+    name: supervisor
+    state: started

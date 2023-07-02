@@ -2,3 +2,8 @@
   ansible.builtin.package:
     name: git
     state: present
+
+- name: Install supervisor
+  ansible.builtin.package:
+    name: supervisor
+    state: present

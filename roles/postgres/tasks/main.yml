@@ -45,3 +45,14 @@
     new_owner: ckan_default
     obj_name: ckan_default
     obj_type: database
+
+- name: GRANT ALL PRIVILEGES ON DATABASE library TO ckan_default
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  community.postgresql.postgresql_privs:
+    db: ckan_default
+    privs: ALL
+    type: database
+    obj: ckan_default
+    role: ckan_default

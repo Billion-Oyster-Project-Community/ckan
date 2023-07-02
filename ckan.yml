@@ -11,3 +11,9 @@
     - redis
     - solr
     - ckan
+    - supervisord
+    # TODO Configure handlers for notifying nginx to start
+    - nginx
+
+# Notes
+# restart apache solr, supervisorctl, nginx
