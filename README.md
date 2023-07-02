@@ -7,24 +7,22 @@ To run this playbook
 ansible-playbook -K -i inventory.yml ckan.yml
 ```
 
-<h3>Todo:</h3>
+## Project Status
 
-<u>Ckan</u>
-- Configuration files
-    - uWSGI
-- supervisord
+Production ready: ❌
 
-<u>Nginx</u>
-- proxy
+Currently this role is not production ready. It will provide a basic single-node ckan installation and nothing else.
 
-<u>PostgreSQL</u>
-- ckan_default database ✅
+TODO:
 
-<u>Apache Solr</u>
+- Secure port access.
+- Create a dedicated ckan user.
+- Remove redundant dependencies.
+- Add handlers for supervisorctl, supervisor, nginx, solr, and ckan.
+- Add ckan version variable.
+- ckan extensions.
+- 100% ansible-lint.
 
-<u>Redis</u> ✅
+## Future Features
 
-<u>Ckan extensions</u>
-- xloader
-- datastore
-
+This project is not intended to only be a ckan role. In the future Azure Virtual Machine support, remote postgres, Ceph,  and other high availability features are planned to be added.
