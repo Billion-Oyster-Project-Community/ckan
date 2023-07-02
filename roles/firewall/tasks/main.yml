@@ -1,3 +1,4 @@
+---
 - name: Install ufw
   ansible.builtin.package:
     name: ufw
@@ -40,16 +41,12 @@
     proto: udp
 
 - name: Allow all access to tcp port 8983 for Apache Solr (See Comment)
-# TODO Change access to local subnet for Apache Solr
-# Solr should never be exposed publicly in a production site. 
   community.general.ufw:
     rule: allow
     port: '8983'
     proto: tcp
 
 - name: Allow all access to tcp port 8983 for Apache Solr (See Comment)
-# TODO Change access to local subnet for Apache Solr
-# Solr should never be exposed publicly in a production site. 
   community.general.ufw:
     rule: allow
     port: '8983'

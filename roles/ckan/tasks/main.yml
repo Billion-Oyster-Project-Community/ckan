@@ -64,18 +64,3 @@
     path: /usr/lib/ckan/default/src/ckan/ckan/public/base/i18n/
     owner: www-data
     mode: u+rwx
-
-# explicitly reload supervisorctl to load process scripts. Create a handler
-# TODO Install CKAN extensions
-
-# NOTES
-# The pip ansible module does not correctly install into /usr/lib/ckan/default/src/
-#
-# On the server you must run sudo supervisorctl reload start the web service
-#
-# CKAN may not be looking at /var/solr/data/ckan/conf/managed-schema
-# but may be looking at /usr/lib/ckan/default/lib/python3.8/site-packages/ckan/config/solr/schema.xml 
-# Make sure to change the schema version to 2.8, 2.9, or 2.10 (use ansible template)
-# RESTART solr afterwards sudo solr service restart
-#
-#
