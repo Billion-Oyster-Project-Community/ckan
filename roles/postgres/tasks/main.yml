@@ -1,3 +1,15 @@
+- name: Allow all access to tcp port 5432 for PostgreSQL
+  community.general.ufw:
+    rule: allow
+    port: '5432'
+    proto: tcp
+
+- name: Allow all access to udp port 5432 for PostgreSQL
+  community.general.ufw:
+    rule: allow
+    port: '5432'
+    proto: udp
+
 - name: Install postgresql
   ansible.builtin.package:
     name: postgresql

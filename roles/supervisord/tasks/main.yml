@@ -14,8 +14,6 @@
     src: roles/supervisord/templates/ckan-uwsgi.conf.j2
     dest: /etc/supervisor/conf.d/ckan-uwsgi.conf
     mode: '0755'
-  notify:
-    - "Restart supervisorctl"
 
 - name: Reload supervisorctl"
   ansible.builtin.command:

@@ -9,7 +9,7 @@
     path: /var/lib/ckan/default
     owner: www-data
     state: directory
-    mode: '0755' # FIXME Switch ownership and access to ckan https://github.com/ckan/ckan/issues/3676
+    mode: '0755'
 
 - name: Create ckan config
   ansible.builtin.template:
