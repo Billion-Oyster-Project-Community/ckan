@@ -15,9 +15,31 @@
     dest: /etc/supervisor/conf.d/ckan-uwsgi.conf
     mode: '0644'
 
-- name: Reload supervisorctl
+- name: Create ckan worker supervisord script
+  ansible.builtin.template:
+    src: roles/supervisord/templates/ckan-worker.conf.j2
+    dest: /etc/supervisor/conf.d/ckan-worker.conf
+    mode: '0644'
+
+- name: Check supervisor status
   ansible.builtin.command:
-    cmd: supervisorctl reload
+    cmd: service supervisor status
+  register: supervisor_status
+
+- name: Set supervisord configuration 
+  ansible.builtin.command:
+    cmd: supervisord -c /etc/supervisor/supervisord.conf
+  when: "'running' not in supervisor_status.stdout"
+
+- name: Restart supervisord
+  ansible.builtin.service:
+    name: supervisor
+    state: restarted
+
+- name: Restart all programs and program groups
+  community.general.supervisorctl:
+    name: all
+    state: restarted
 
 - name: Restart nginx
   ansible.builtin.service:

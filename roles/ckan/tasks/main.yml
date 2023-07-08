@@ -11,11 +11,17 @@
     state: directory
     mode: u+rwx
 
+- name: Check ckan config
+  ansible.builtin.stat:
+    path: /etc/ckan/default/ckan.ini
+  register: ckan_config
+
 - name: Create ckan config
   ansible.builtin.template:
     src: roles/ckan/templates/ckan.ini.j2
     dest: /etc/ckan/default/ckan.ini
     mode: '0755'
+  when: "not ckan_config.stat.exists"
 
 - name: Create ckan uwsgi script
   ansible.builtin.template:

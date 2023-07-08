@@ -1,5 +1,5 @@
 # ckan
-Infrastructure &amp; Automation tooling for deploying ckan.
+Infrastructure and Automation tooling for deploying ckan.
 
 To run this playbook
 
@@ -15,12 +15,20 @@ Currently this role is not production ready. It will provide a basic single-node
 
 ## Future Features
 
-This project is not intended to only be a ckan role. In the future Azure Virtual Machine support, remote postgres, Ceph,  and other high availability features are planned to be added.
+This project is not intended to only be a ckan role. In the future AWS EC2 support, remote postgres (RDS), Ceph,  and other high availability features are planned to be added.
 
 ## Basic Administration
 **Creating a Sysadmin user**
 ```bash
-sudo -u www-data /usr/lib/ckan/default/bin/ckan -c /etc/ckan/default/ckan.ini sysadmin add glenn name=glenn
+sudo -u www-data /usr/lib/ckan/default/bin/ckan -c /etc/ckan/default/ckan.ini sysadmin add admin name=admin
+```
+**Xloader configuration**
+1. Login as an admin user
+1. Go to API Tokens
+1. Create an API token for xloader
+1. Insert the API token into `/etc/ckan/default/ckan.ini`
+```ini
+ckanext.xloader.api_token = API_TOKEN
 ```
 
 ## Contributing
