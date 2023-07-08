@@ -30,6 +30,8 @@
     name: postgresql
     state: started
 
+# CKAN_DEFAULT
+
 - name: Create ckan_default db
   become_user: postgres
   vars:
@@ -68,3 +70,48 @@
     type: database
     obj: ckan_default
     role: ckan_default
+
+# DATASTORE
+
+- name: Create datastore_default db
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  community.postgresql.postgresql_db:
+    name: datastore_default
+    encoding: UTF-8
+
+- name: Create datastore_default user
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  community.postgresql.postgresql_user:
+    db: datastore_default
+    name: datastore_default
+    password: "{{ postgres_password }}"
+
+- name: Set datastore_default owner to ckan_default
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  community.postgresql.postgresql_owner:
+    db: datastore_default
+    new_owner: ckan_default
+    obj_name: datastore_default
+    obj_type: database
+
+- name: Copy PostgreSQL script to target host
+  ansible.builtin.template:
+    src: roles/postgres/sql/datastore_default.sql
+    dest: /tmp/datastore_default.sql
+    owner: postgres
+    mode: '0644'
+
+- name: Set permissions on datastore_default
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  community.postgresql.postgresql_script:
+    db: datastore_default
+    path: /tmp/datastore_default.sql
+    # TODO only execute when needed

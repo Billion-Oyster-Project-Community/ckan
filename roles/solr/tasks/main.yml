@@ -1,14 +1,16 @@
-- name: Allow all access to tcp port 8983 for Apache Solr (See Comment)
+- name: Allow localhost access to tcp port 8983 for Apache Solr
   community.general.ufw:
     rule: allow
     port: '8983'
     proto: tcp
+    src: 127.0.0.1
 
-- name: Allow all access to tcp port 8983 for Apache Solr (See Comment)
+- name: Allow localhost access to tcp port 8983 for Apache Solr
   community.general.ufw:
     rule: allow
     port: '8983'
     proto: tcp
+    src: 127.0.0.1
 
 - name: Create /tmp/solr
   ansible.builtin.file:
@@ -38,6 +40,8 @@
     cmd: /tmp/solr/solr-8.11.2/bin/install_solr_service.sh /tmp/solr/solr-8.11.2.tgz
   when: "not solr.stat.exists"
 
+# TODO Set solr environment variables https://solr.apache.org/guide/6_6/taking-solr-to-production.html#TakingSolrtoProduction-init.dscript
+
 - name: Start Apache Solr
   ansible.builtin.service:
     name: solr
@@ -61,6 +65,5 @@
     src: roles/solr/templates/schema.xml.j2
     dest: /var/solr/data/ckan/conf/managed-schema
     mode: '0755'
-    # dest: /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
   notify:
     - "Restart solr"

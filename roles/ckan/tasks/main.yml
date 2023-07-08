@@ -9,7 +9,7 @@
     path: /var/lib/ckan/default
     owner: www-data
     state: directory
-    mode: '0755'
+    mode: u+rwx
 
 - name: Create ckan config
   ansible.builtin.template:
@@ -27,7 +27,7 @@
   ansible.builtin.template:
     src: roles/ckan/templates/ckan-uwsgi.ini.j2
     dest: /etc/ckan/default/ckan-uwsgi.ini
-    mode: '0755'
+    mode: '0644'
 
 - name: Create ckan venv directory
   ansible.builtin.file:
@@ -40,10 +40,32 @@
     cmd: /usr/bin/python3 -m venv /usr/lib/ckan/default
     creates: /usr/lib/ckan/default/bin/activate
 
-# TODO The psycopg2 installation in other locations other than the venv may be redundant.
 - name: Install psycopg2 into ckan venv
   ansible.builtin.pip:
     name: psycopg2-binary
+    virtualenv: /usr/lib/ckan/default
+
+# XLOADER
+
+- name: Install xloader requirements.txt
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/ckan/ckanext-xloader/master/requirements.txt
+    dest: /tmp/xloader_requirements.txt
+    mode: '0644'
+
+- name: Install xloader dependinces
+  ansible.builtin.pip:
+    requirements: /tmp/xloader_requirements.txt
+    virtualenv: /usr/lib/ckan/default
+
+- name: Install xloader depenincies
+  ansible.builtin.pip:
+    name: requests[security]
+    virtualenv: /usr/lib/ckan/default
+
+- name: Install xloader into ckan venv
+  ansible.builtin.pip:
+    name: ckanext-xloader
     virtualenv: /usr/lib/ckan/default
 
 - name: Install uwsgi into ckan venv

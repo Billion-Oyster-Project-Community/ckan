@@ -57,7 +57,8 @@ ckan.devserver.ssl_key =
 ckan.user.last_active_interval = 600
 cache_dir = /tmp/%(ckan.site_id)s
 beaker.session.key = ckan
-beaker.session.secret = ZB1kbPBBL-IgXcONO9XxgZgCDRE
+# FIXME ansible secrets
+beaker.session.secret = {{ beaker_sesison_secret }}
 beaker.session.auto = false
 beaker.session.cookie_expires = false
 # beaker.session.cookie_domain = .example.com
@@ -67,11 +68,14 @@ beaker.session.timeout = 600
 
 ## Database settings ###########################################################
 sqlalchemy.url = postgresql://ckan_default:{{ postgres_password }}@localhost/ckan_default
+ckan.datastore.write_url = postgresql://ckan_default:{{ postgres_password }}@localhost/datastore_default
+ckan.datastore.read_url = postgresql://datastore_default:{{ postgres_password }}@localhost/datastore_default
+ckanext.xloader.jobs_db.uri = postgresql://ckan_default:{{ postgres_password }}@localhost/ckan_default
 sqlalchemy.pool_pre_ping = true
 # sqlalchemy.<OPTION> = 
 
 ## Site Settings ###############################################################
-ckan.site_url = http://{{ ansible_host }}
+ckan.site_url = http://{{ fqdn }}
 apikey_header_name = X-CKAN-API-Key
 ckan.cache_expires = 0
 ckan.cache_enabled = false
@@ -108,7 +112,8 @@ ckan.auth.route_after_login = dashboard.datasets
 ## CSRF Protection #############################################################
 WTF_CSRF_ENABLED = true
 WTF_CSRF_CHECK_DEFAULT = true
-WTF_CSRF_SECRET_KEY = iCcZ5Z0UikNbPBjnRp5nxa0OReNKxLuyrXVOPSU7IcY
+# FIXME ansible secrets
+WTF_CSRF_SECRET_KEY = {{ csrf_secret_key }}
 WTF_CSRF_METHODS = POST PUT PATCH DELETE
 WTF_CSRF_FIELD_NAME = _csrf_token
 WTF_CSRF_HEADERS = X-CSRFToken X-CSRF-Token
@@ -136,6 +141,7 @@ api_token.jwt.algorithm = HS256
 ## Search Settings #############################################################
 ckan.site_id = default
 solr_url = http://127.0.0.1:8983/solr/ckan
+# TODO Add Solr security
 solr_user = 
 solr_password = 
 ckan.search.remove_deleted_packages = true
@@ -160,7 +166,7 @@ ckan.cors.origin_allow_all = false
 ckan.cors.origin_whitelist = 
 
 ## Plugins Settings ############################################################
-ckan.plugins = activity
+ckan.plugins = activity {{ plugins }}
 ckan.resource_proxy.timeout = 5
 
 ## Front-End Settings ##########################################################

@@ -13,9 +13,9 @@
   ansible.builtin.template:
     src: roles/supervisord/templates/ckan-uwsgi.conf.j2
     dest: /etc/supervisor/conf.d/ckan-uwsgi.conf
-    mode: '0755'
+    mode: '0644'
 
-- name: Reload supervisorctl"
+- name: Reload supervisorctl
   ansible.builtin.command:
     cmd: supervisorctl reload
 
