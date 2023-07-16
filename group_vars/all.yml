@@ -1,0 +1,2 @@
+beaker_session_secret: "{{ lookup('ansible.builtin.password', '/dev/null', length=15) }}"
+csrf_secret_key: "{{ lookup('ansible.builtin.password', '/dev/null', length=15) }}"

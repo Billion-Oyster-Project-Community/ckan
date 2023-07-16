@@ -31,6 +31,14 @@ sudo -u www-data /usr/lib/ckan/default/bin/ckan -c /etc/ckan/default/ckan.ini sy
 ckanext.xloader.api_token = API_TOKEN
 ```
 
+## Role Usage
+| Variable            | Description                                                                                                |
+| ------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `fqdn`              | The fully qualified domain name of the target host.                                                        |
+| `ckan_version`      | The ckan installation version. **Only supported version is 2.10+**                                         |
+| `postgres_password` | The `postgres` user master password alongside with the user password for the `ckan_default` postgres user. |
+|                     |
+
 ## Contributing
 
 This project uses Vagrant as the primary method to test this Ansible playbook.

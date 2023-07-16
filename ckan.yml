@@ -7,7 +7,8 @@
     - firewall
     - java
     - python
-    - postgres
+    - postgres_system
+    - postgres_data
     - redis
     - solr
     - ckan

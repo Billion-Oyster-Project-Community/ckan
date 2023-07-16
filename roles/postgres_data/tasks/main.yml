@@ -1,0 +1,82 @@
+- name: Create ckan_default db
+  community.postgresql.postgresql_db:
+    login_host: "{{ fqdn }}"
+    login_user: postgres
+    login_password: "{{ postgres_password }}"
+    name: ckan_default
+    encoding: UTF-8
+
+- name: Create ckan_default user
+  community.postgresql.postgresql_user:
+    login_host: "{{ fqdn }}"
+    login_user: postgres
+    login_password: "{{ postgres_password }}"
+    db: ckan_default
+    name: ckan_default
+    password: "{{ postgres_password }}"
+
+- name: Set ckan_default owner to ckan_default
+  community.postgresql.postgresql_owner:
+    login_host: "{{ fqdn }}"
+    login_user: postgres
+    login_password: "{{ postgres_password }}"
+    db: ckan_default
+    new_owner: ckan_default
+    obj_name: ckan_default
+    obj_type: database
+
+- name: Grant all privliges to ckan_default
+  community.postgresql.postgresql_privs:
+    login_host: "{{ fqdn }}"
+    login_user: postgres
+    login_password: "{{ postgres_password }}"
+    db: ckan_default
+    privs: ALL
+    type: database
+    obj: ckan_default
+    role: ckan_default
+
+# DATASTORE
+
+- name: Create datastore_default db
+  community.postgresql.postgresql_db:
+    login_host: "{{ fqdn }}"
+    login_user: postgres
+    login_password: "{{ postgres_password }}"
+    name: datastore_default
+    encoding: UTF-8
+
+- name: Create datastore_default user
+  community.postgresql.postgresql_user:
+    login_host: "{{ fqdn }}"
+    login_user: postgres
+    login_password: "{{ postgres_password }}"
+    db: datastore_default
+    name: datastore_default
+    password: "{{ postgres_password }}"
+
+- name: Set ckan_default to owner of datastore_default
+  community.postgresql.postgresql_owner:
+    login_host: "{{ fqdn }}"
+    login_user: postgres
+    login_password: "{{ postgres_password }}"
+    db: datastore_default
+    new_owner: ckan_default
+    obj_name: datastore_default
+    obj_type: database
+
+- name: Setup PostgreSQL ckan_default script on control node
+  ansible.builtin.template:
+    src: datastore_default.sql
+    dest: /tmp/datastore_default.sql
+    mode: '0644'
+  delegate_to: 127.0.0.1
+
+- name: Set permissions on datastore_default
+  community.postgresql.postgresql_script:
+    login_host: "{{ fqdn }}"
+    login_user: ckan_default
+    login_password: "{{ postgres_password }}"
+    db: datastore_default
+    path: /tmp/datastore_default.sql
+  delegate_to: 127.0.0.1

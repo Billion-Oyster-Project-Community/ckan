@@ -4,6 +4,75 @@
     state: directory
     mode: '0755'
 
+# CSRF Secret
+
+- name: Create ckan csrf.key
+  ansible.builtin.file:
+    path: /etc/ckan/default/csrf.key
+    state: touch
+    mode: '0600'
+    owner: "{{ ansible_user }}"
+
+- name: Check contents of csrf.key
+  ansible.builtin.shell:
+    cmd: cat /etc/ckan/default/csrf.key
+  register: csrf_status
+
+- name: Insert secret into csrf.key
+  ansible.builtin.template:
+    src: roles/ckan/templates/csrf.key.j2
+    dest: /etc/ckan/default/csrf.key
+    mode: '0600'
+    owner: "{{ ansible_user }}"
+  when: "csrf_status.stdout | length == 0"
+
+- name: Load csrf
+  ansible.builtin.slurp:
+    src: /etc/ckan/default/csrf.key
+  register: csrf_data
+
+- name: Set csrf fact
+  ansible.builtin.set_fact:
+    csrf_data: "{{ csrf_data['content'] }}"
+
+- name: Create ckan csrf.key
+  ansible.builtin.file:
+    path: /etc/ckan/default/csrf.key
+    state: touch
+    mode: '0600'
+    owner: "{{ ansible_user }}"
+
+# BEAKER SECRET
+
+- name: Create ckan beaker_session.key
+  ansible.builtin.file:
+    path: /etc/ckan/default/beaker_session.key
+    state: touch
+    mode: '0600'
+    owner: "{{ ansible_user }}"
+
+- name: Check contents of beaker_session.key
+  ansible.builtin.shell:
+    cmd: cat /etc/ckan/default/beaker_session.key
+  register: beaker_session_status
+
+- name: Insert secret into beaker_session.key
+  ansible.builtin.template:
+    src: roles/ckan/templates/beaker_session.key.j2
+    dest: /etc/ckan/default/beaker_session.key
+    mode: '0600'
+    owner: "{{ ansible_user }}"
+  when: "beaker_session_status.stdout | length == 0"
+
+- name: Load beaker_session secret
+  ansible.builtin.slurp:
+    src: /etc/ckan/default/beaker_session.key
+  register: beaker_session_secret_data
+
+- name: Set csrf fact
+  ansible.builtin.set_fact:
+    beaker_session_secret: "{{ beaker_session_secret_data['content'] }}"
+
 - name: Create ckan uploads directory
   ansible.builtin.file:
     path: /var/lib/ckan/default
@@ -90,11 +159,6 @@
     pip install -e 'git+https://github.com/ckan/ckan.git@ckan-2.10.1#egg=ckan[requirements]'
   args:
     executable: /bin/bash
-
-- name: Restart solr
-  ansible.builtin.service:
-    name: solr
-    state: restarted
 
 - name: Initialize ckan database
   ansible.builtin.shell:

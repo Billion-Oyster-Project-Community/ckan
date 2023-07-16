@@ -1,0 +1,62 @@
+- name: Allow all access to tcp port 5432 for PostgreSQL
+  community.general.ufw:
+    rule: allow
+    port: '5432'
+    proto: tcp
+
+- name: Allow all access to udp port 5432 for PostgreSQL
+  community.general.ufw:
+    rule: allow
+    port: '5432'
+    proto: udp
+
+- name: Install PostgreSQL
+  ansible.builtin.package:
+    name: postgresql
+    state: present
+
+- name: Install libpq
+  ansible.builtin.package:
+    name: libpq5
+    state: present
+
+- name: Install libpq-dev
+  ansible.builtin.package:
+    name: libpq-dev
+    state: present
+
+- name: Install psycopg2 into ckan venv
+  ansible.builtin.pip:
+    name: psycopg2-binary
+
+- name: Set PostgreSQL password for postgres
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  community.postgresql.postgresql_user:
+    name: postgres
+    password: "{{ postgres_password }}"
+
+- name: Configure postgresql.conf
+  ansible.builtin.template:
+    owner: postgres
+    src: postgresql.conf.j2
+    dest: /etc/postgresql/12/main/postgresql.conf
+    mode: '0644'
+
+- name: Configure pg_hba.conf
+  ansible.builtin.template:
+    owner: postgres
+    src: pg_hba.conf.j2
+    dest: /etc/postgresql/12/main/pg_hba.conf
+    mode: '0644'
+
+- name: Retart PostgreSQL
+  ansible.builtin.service:
+    name: postgresql
+    state: restarted
+
+- name: Start PostgreSQL
+  ansible.builtin.service:
+    name: postgresql
+    state: started

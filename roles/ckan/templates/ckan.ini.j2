@@ -57,8 +57,7 @@ ckan.devserver.ssl_key =
 ckan.user.last_active_interval = 600
 cache_dir = /tmp/%(ckan.site_id)s
 beaker.session.key = ckan
-# FIXME ansible secrets
-beaker.session.secret = {{ beaker_sesison_secret }}
+beaker.session.secret = {{ beaker_session_secret }}
 beaker.session.auto = false
 beaker.session.cookie_expires = false
 # beaker.session.cookie_domain = .example.com
@@ -113,8 +112,7 @@ ckan.auth.route_after_login = dashboard.datasets
 ## CSRF Protection #############################################################
 WTF_CSRF_ENABLED = true
 WTF_CSRF_CHECK_DEFAULT = true
-# FIXME ansible secrets
-WTF_CSRF_SECRET_KEY = {{ csrf_secret_key }}
+WTF_CSRF_SECRET_KEY = {{ csrf_data }}
 WTF_CSRF_METHODS = POST PUT PATCH DELETE
 WTF_CSRF_FIELD_NAME = _csrf_token
 WTF_CSRF_HEADERS = X-CSRFToken X-CSRF-Token

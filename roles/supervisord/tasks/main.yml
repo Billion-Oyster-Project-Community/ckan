@@ -36,7 +36,7 @@
     name: supervisor
     state: restarted
 
-- name: Restart all programs and program groups
+- name: (supervisorctl) Restart all programs and program groups
   community.general.supervisorctl:
     name: all
     state: restarted
