@@ -11,7 +11,7 @@ ansible-playbook -K -i inventory.yml ckan.yml
 
 Production ready: ✅
 
-This role can be used to deploy a single node instance of ckan. It is recommended to configure a reverse proxy for ssl termination. If a remote database is being used comment out `postgres_system` in inventory.yml
+This role can be used to deploy a single node instance of ckan. It is recommended to configure a reverse proxy for ssl termination. If a remote database is being used comment out replace `postgres_host` with the remote hosts address in `inventory.yml`.
 
 ## Future Features
 
@@ -36,6 +36,7 @@ xloader_api_token: API_TOKEN
 | ------------------- | ---------------------------------------------------------------------------------------------------------- |
 | `fqdn` | The fully qualified domain name of the target host.                                                                     |
 | `ckan_version` | The ckan installation version. **Only supported version is 2.10+**                                              |
+| `postgres_host` | The address of the PostgreSQL instance.                                                                        |
 | `postgres_password` | The `postgres` user master password alongside with the user password for the `ckan_default` postgres user. |
 | `xloader_api_token` | API Token for https://github.com/ckan/ckanext-xloader                                                      |
 | `plugins` | ckan plugins that are to be loaded into ckan on startup. `xloader` & `datastore` (required) are installed by default.|
