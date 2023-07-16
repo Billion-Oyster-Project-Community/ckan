@@ -3,4 +3,4 @@
     name: ufw
     state: present
   notify:
-    - Restart ufw
+    - Enable ufw
