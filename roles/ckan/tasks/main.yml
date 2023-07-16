@@ -160,6 +160,17 @@
   args:
     executable: /bin/bash
 
+- name: Configure ckan solr schema
+  ansible.builtin.template:
+    src: roles/solr/templates/schema.xml.j2
+    dest: /var/solr/data/ckan/conf/managed-schema
+    mode: '0755'
+
+- name: Restart solr
+  ansible.builtin.service:
+    name: solr
+    state: restarted
+
 - name: Initialize ckan database
   ansible.builtin.shell:
     cmd: /usr/lib/ckan/default/bin/ckan -c /etc/ckan/default/ckan.ini db init

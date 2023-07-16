@@ -5,7 +5,8 @@ ckan:
   vars:
     ansible_user: "{{ lookup('ansible.builtin.env', 'REMOTE_USER') }}"
     # Currently only 2.10 is supported
-    fqdn: 192.168.121.254
+    fqdn: localhost
     ckan_version: 2.10
     postgres_password: POSTGRES_PASSWORD
+    xloader_api_token: ""
     plugins: xloader datastore

@@ -1,2 +1,11 @@
+# CKAN
+
 beaker_session_secret: "{{ lookup('ansible.builtin.password', '/dev/null', length=15) }}"
 csrf_secret_key: "{{ lookup('ansible.builtin.password', '/dev/null', length=15) }}"
+
+# SOLR
+
+solr_cores:
+  - ckan
+solr_connect_host: localhost
+solr_restart_handler_enabled: true
