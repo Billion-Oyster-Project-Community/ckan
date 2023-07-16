@@ -26,9 +26,9 @@ sudo -u www-data /usr/lib/ckan/default/bin/ckan -c /etc/ckan/default/ckan.ini sy
 1. Login as an admin user
 1. Go to API Tokens
 1. Create an API token for xloader
-1. Insert the API token into `/etc/ckan/default/ckan.ini`
-```ini
-ckanext.xloader.api_token = API_TOKEN
+2. Insert the API token into `inventory.yml`
+```yml
+xloader_api_token: API_TOKEN
 ```
 
 ## Role Usage
