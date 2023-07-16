@@ -10,7 +10,6 @@
     - postgres_system
     - postgres_data
     - redis
-    # - solr
     - geerlingguy.solr
     - ckan
     - nginx

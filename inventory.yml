@@ -7,6 +7,7 @@ ckan:
     # Currently only 2.10 is supported
     fqdn: localhost
     ckan_version: 2.10
+    postgres_host: localhost
     postgres_password: POSTGRES_PASSWORD
     xloader_api_token: ""
     plugins: xloader datastore
