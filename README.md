@@ -9,8 +9,6 @@ ansible-playbook -K -i inventory.yml ckan.yml
 
 ## Project Status
 
-Production ready: ✅
-
 This role can be used to deploy a single node instance of ckan. It is recommended to configure a reverse proxy for ssl termination. If a remote database is being used replace `postgres_host` with the remote hosts address in `inventory.yml`.
 
 ## Future Features
